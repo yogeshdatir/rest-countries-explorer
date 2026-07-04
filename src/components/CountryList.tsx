@@ -12,8 +12,11 @@ const CountryList = ({ countries, loading, error }: Props) => {
   if (loading) {
     return (
       <section className="gap-18 grid grid-cols-4 w-7xl">
-        {new Array(12).fill(null).map(() => (
-          <Skeleton className="bg-gray-300 rounded-[5px] w-[264px] h-[336px]" />
+        {new Array(12).fill(null).map((_, index) => (
+          <Skeleton
+            key={index}
+            className="bg-gray-300 rounded-[5px] w-[264px] h-[336px]"
+          />
         ))}
       </section>
     );

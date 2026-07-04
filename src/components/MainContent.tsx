@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { SearchInput } from './SearchInput';
 import SelectField from './SelectField';
 import CountryList from './CountryList';
+import useDebounce from '@/hooks/useDebounce';
 
 interface Filters {
   region: string;
@@ -30,8 +31,9 @@ const MainContent = () => {
     searchQ: '',
     region: '',
   });
+  const debouncedSearchQ = useDebounce(filters.searchQ);
 
-  const { searchQ, region } = filters;
+  const { region } = filters;
 
   useEffect(() => {
     const filterOptionsController = new AbortController();
@@ -67,7 +69,7 @@ const MainContent = () => {
   useEffect(() => {
     const countriesController = new AbortController();
 
-    fetch(`/api/countries?search=${searchQ}&region=${region}`, {
+    fetch(`/api/countries?search=${debouncedSearchQ}&region=${region}`, {
       signal: countriesController.signal,
     })
       .then((res) => {
@@ -93,7 +95,7 @@ const MainContent = () => {
     return () => {
       countriesController.abort();
     };
-  }, [searchQ, region]);
+  }, [debouncedSearchQ, region]);
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({ ...prev, searchQ: event.target.value }));
