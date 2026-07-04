@@ -39,7 +39,6 @@ const FilterBar = ({
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         setFilterOptionsLoading(false);
         setFilterOptions(data);
         setFilterOptionsError(null);

@@ -41,4 +41,23 @@ export const handlers = [
 
     return HttpResponse.json({ regions: Array.from(regionsSet) });
   }),
+
+  http.get('/api/country', async ({ request }) => {
+    await delay(300);
+    const url = new URL(request.url);
+
+    // Given a request url of "/?alpha3Code=1",
+    // the `alpha3Code` will be a "1" string.
+    const alpha3Code = url.searchParams.get('alpha3Code');
+
+    if (!alpha3Code) {
+      return new HttpResponse(null, { status: 404 });
+    }
+
+    const country = countries.find((country: Country) => {
+      return country.alpha3Code === alpha3Code;
+    });
+
+    return HttpResponse.json(country);
+  }),
 ];

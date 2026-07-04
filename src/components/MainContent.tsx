@@ -33,7 +33,6 @@ const MainContent = () => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
         setCountriesLoading(false);
         setCountries(data);
         setError(null);
@@ -64,7 +63,7 @@ const MainContent = () => {
   };
 
   return (
-    <main className="flex flex-col items-center gap-12 py-12 w-full">
+    <div className="flex flex-col items-center gap-12 py-12 w-full">
       <FilterBar
         filters={filters}
         countriesLoading={countriesLoading}
@@ -76,7 +75,7 @@ const MainContent = () => {
         loading={countriesLoading}
         error={error}
       />
-    </main>
+    </div>
   );
 };
 
