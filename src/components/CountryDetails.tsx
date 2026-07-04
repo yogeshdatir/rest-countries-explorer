@@ -124,23 +124,31 @@ const CountryDetails = ({ countryDetails, loading, error }: Props) => {
                 <span className="font-semibold text-nowrap">
                   Top Level Domain:{' '}
                 </span>
-                {countryDetails?.topLevelDomain[0]}
+                {countryDetails?.topLevelDomain?.join(', ')}
               </span>
               <span>
                 <span className="font-semibold text-nowrap">Currencies: </span>
-                {countryDetails?.currencies?.[0].name}
+                {countryDetails?.currencies
+                  ?.map((currency) => currency.name)
+                  .join(', ')}
               </span>
               <span>
                 <span className="font-semibold text-nowrap">Languages: </span>
-                {countryDetails?.languages?.[0].name}
+                {countryDetails?.languages
+                  ?.map((language) => language.name)
+                  .join(', ')}
               </span>
             </div>
           </div>
         </div>
 
-        <div>
+        <div className="flex items-center gap-5">
           <span className="font-semibold text-nowrap">Border Countries: </span>
-          <span>{countryDetails?.borders?.[0] ?? 'None'}</span>
+          <div className="flex gap-5">
+            {countryDetails?.borders?.map((border: string) => (
+              <div className="p-1 px-4 border rounded">{border}</div>
+            )) ?? 'None'}
+          </div>
         </div>
       </div>
     </div>

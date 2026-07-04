@@ -12,7 +12,7 @@ const TopBar = () => {
   };
 
   return (
-    <header className="top-0 sticky flex justify-center items-center shadow-sm w-full h-[80px]">
+    <header className="top-0 sticky flex justify-center items-center bg-white dark:bg-card shadow-sm w-full h-[80px]">
       <div className={`flex justify-between ${containerClasses}`}>
         <TypographyH1>Where in the world?</TypographyH1>
         <Button variant="ghost" onClick={handleThemeToggle}>
