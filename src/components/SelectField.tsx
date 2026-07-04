@@ -7,16 +7,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select';
+import { Skeleton } from './ui/skeleton';
 
 type Props = {
   value: string | undefined;
   onValueChange: (value: string) => void;
   selectItems: string[];
+  loading: boolean;
+  error: string | null;
+  disabled?: boolean;
 };
 
-const SelectField = ({ value, onValueChange, selectItems }: Props) => {
+const SelectField = ({
+  value,
+  onValueChange,
+  selectItems,
+  loading,
+  error,
+  disabled = false,
+}: Props) => {
+  if (loading) return <Skeleton className="bg-gray-300 w-[200px] h-full" />;
+
+  if (error) return <div>{error}</div>;
+
   return (
-    <Select value={value} onValueChange={onValueChange}>
+    <Select value={value} onValueChange={onValueChange} disabled={disabled}>
       <SelectTrigger className="px-6 w-[200px] h-full!">
         <SelectValue placeholder="Filter by Region" />
       </SelectTrigger>

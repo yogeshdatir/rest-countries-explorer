@@ -32,14 +32,13 @@ export const handlers = [
     return HttpResponse.json(result);
   }),
 
-  http.get('/api/countries/:code', async ({ params }) => {
+  http.get('/api/filterOptions', async () => {
     await delay(300);
-    const country = countries.find((c) => c.alpha3Code === params.code);
+    const regionsSet = new Set<string>();
+    countries?.forEach((country: Country) => {
+      regionsSet.add(country.region);
+    });
 
-    if (!country) {
-      return HttpResponse.json({ message: 'Not found' }, { status: 404 });
-    }
-
-    return HttpResponse.json(country);
+    return HttpResponse.json({ regions: Array.from(regionsSet) });
   }),
 ];
