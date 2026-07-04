@@ -12,52 +12,64 @@ const CountryDetails = ({ countryDetails, loading, error }: Props) => {
   if (loading) {
     return (
       <div className="flex lg:flex-row flex-col gap-11 lg:gap-30 max-sm:w-[320px]">
-        <Skeleton className="bg-gray-300 w-[320px] md:w-[560px] h-[213px] aspect-video" />
+        <Skeleton className="bg-gray-300 md:w-[560px] lg:w-[416px] xl:w-[560px] md:h-[366px] lg:h-[277px] xl:h-[366px] aspect-video" />
         <div className="flex flex-col gap-6">
           <div className="flex flex-col gap-6">
             <Skeleton className="bg-gray-300 w-40 h-9" />
             <div className="flex lg:flex-row flex-col gap-6">
               <div className="flex flex-col leading-loose">
-                <p className="flex items-center gap-1">
-                  <span className="font-semibold">Native Name: </span>
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-nowrap">
+                    Native Name:{' '}
+                  </span>
                   <Skeleton className="bg-gray-300 w-20 h-4" />
-                </p>
-                <p className="flex items-center gap-1">
-                  <span className="font-semibold">Population: </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-nowrap">
+                    Population:{' '}
+                  </span>
                   <Skeleton className="bg-gray-300 w-20 h-4" />
-                </p>
-                <p className="flex items-center gap-1">
-                  <span className="font-semibold">Region: </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-nowrap">Region: </span>
                   <Skeleton className="bg-gray-300 w-20 h-4" />
-                </p>
-                <p className="flex items-center gap-1">
-                  <span className="font-semibold">Sub Region: </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-nowrap">
+                    Sub Region:{' '}
+                  </span>
                   <Skeleton className="bg-gray-300 w-20 h-4" />
-                </p>
-                <p className="flex items-center gap-1">
-                  <span className="font-semibold">Capital: </span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-nowrap">Capital: </span>
                   <Skeleton className="bg-gray-300 w-20 h-4" />
-                </p>
+                </div>
               </div>
               <div className="flex flex-col leading-loose">
-                <p className="flex items-center gap-1">
-                  <span className="font-semibold">Top Level Domain: </span>
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-nowrap">
+                    Top Level Domain:{' '}
+                  </span>
                   <Skeleton className="bg-gray-300 w-20 h-4" />
-                </p>{' '}
-                <p className="flex items-center gap-1">
-                  <span className="font-semibold">Currencies: </span>
+                </div>{' '}
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-nowrap">
+                    Currencies:{' '}
+                  </span>
                   <Skeleton className="bg-gray-300 w-20 h-4" />
-                </p>{' '}
-                <p className="flex items-center gap-1">
-                  <span className="font-semibold">Languages: </span>
+                </div>{' '}
+                <div className="flex items-center gap-1">
+                  <span className="font-semibold text-nowrap">Languages: </span>
                   <Skeleton className="bg-gray-300 w-20 h-4" />
-                </p>
+                </div>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-1">
-            <span className="font-semibold">Border Countries: </span>
+            <span className="font-semibold text-nowrap">
+              Border Countries:{' '}
+            </span>
             <Skeleton className="bg-gray-300 w-20 h-4" />
           </div>
         </div>
@@ -87,37 +99,39 @@ const CountryDetails = ({ countryDetails, loading, error }: Props) => {
           <div className="flex lg:flex-row flex-col gap-6">
             <div className="flex flex-col leading-loose">
               <span>
-                <span className="font-semibold">Native Name: </span>
+                <span className="font-semibold text-nowrap">Native Name: </span>
                 {countryDetails?.nativeName}
               </span>
               <span>
-                <span className="font-semibold">Population: </span>
+                <span className="font-semibold text-nowrap">Population: </span>
                 {countryDetails?.population}
               </span>
               <span>
-                <span className="font-semibold">Region: </span>
+                <span className="font-semibold text-nowrap">Region: </span>
                 {countryDetails?.region}
               </span>
               <span>
-                <span className="font-semibold">Sub Region: </span>
+                <span className="font-semibold text-nowrap">Sub Region: </span>
                 {countryDetails?.subregion}
               </span>
               <span>
-                <span className="font-semibold">Capital: </span>
+                <span className="font-semibold text-nowrap">Capital: </span>
                 {countryDetails?.capital}
               </span>
             </div>
             <div className="flex flex-col leading-loose">
               <span>
-                <span className="font-semibold">Top Level Domain: </span>
+                <span className="font-semibold text-nowrap">
+                  Top Level Domain:{' '}
+                </span>
                 {countryDetails?.topLevelDomain[0]}
               </span>
               <span>
-                <span className="font-semibold">Currencies: </span>
+                <span className="font-semibold text-nowrap">Currencies: </span>
                 {countryDetails?.currencies?.[0].name}
               </span>
               <span>
-                <span className="font-semibold">Languages: </span>
+                <span className="font-semibold text-nowrap">Languages: </span>
                 {countryDetails?.languages?.[0].name}
               </span>
             </div>
@@ -125,7 +139,7 @@ const CountryDetails = ({ countryDetails, loading, error }: Props) => {
         </div>
 
         <div>
-          <span className="font-semibold">Border Countries: </span>
+          <span className="font-semibold text-nowrap">Border Countries: </span>
           <span>{countryDetails?.borders?.[0] ?? 'None'}</span>
         </div>
       </div>
