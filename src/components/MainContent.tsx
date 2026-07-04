@@ -1,31 +1,18 @@
 import type { Country } from '@/types/country';
 import { useEffect, useState } from 'react';
-import { SearchInput } from './SearchInput';
-import SelectField from './SelectField';
 import CountryList from './CountryList';
 import useDebounce from '@/hooks/useDebounce';
+import FilterBar from './FilterBar';
 
-interface Filters {
+export interface Filters {
   region: string;
   searchQ: string;
 }
 
-interface FilterOptions {
-  regions: string[];
-}
-
 const MainContent = () => {
   const [countries, setCountries] = useState<Country[] | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [countriesLoading, setCountriesLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  const [filterOptions, setFilterOptions] = useState<FilterOptions | null>(
-    null,
-  );
-  const [filterOptionsLoading, setFilterOptionsLoading] = useState(true);
-  const [filterOptionsError, setFilterOptionsError] = useState<string | null>(
-    null,
-  );
 
   const [filters, setFilters] = useState<Filters>({
     searchQ: '',
@@ -34,37 +21,6 @@ const MainContent = () => {
   const debouncedSearchQ = useDebounce(filters.searchQ);
 
   const { region } = filters;
-
-  useEffect(() => {
-    const filterOptionsController = new AbortController();
-
-    fetch(`/api/filterOptions`, {
-      signal: filterOptionsController.signal,
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch filter options');
-        return res.json();
-      })
-      .then((data) => {
-        console.log(data);
-        setFilterOptionsLoading(false);
-        setFilterOptions(data);
-        setFilterOptionsError(null);
-      })
-      .catch((error: unknown) => {
-        if (error instanceof Error && error.name === 'AbortError') return;
-
-        console.error('Fetch failed:', error);
-        setFilterOptionsLoading(false);
-        setFilterOptionsError(
-          error instanceof Error ? error.message : 'An unknown error occurred',
-        );
-      });
-
-    return () => {
-      filterOptionsController.abort();
-    };
-  }, []);
 
   useEffect(() => {
     const countriesController = new AbortController();
@@ -78,7 +34,7 @@ const MainContent = () => {
       })
       .then((data) => {
         console.log(data);
-        setLoading(false);
+        setCountriesLoading(false);
         setCountries(data);
         setError(null);
       })
@@ -86,7 +42,7 @@ const MainContent = () => {
         if (error instanceof Error && error.name === 'AbortError') return;
 
         console.error('Fetch failed:', error);
-        setLoading(false);
+        setCountriesLoading(false);
         setError(
           error instanceof Error ? error.message : 'An unknown error occurred',
         );
@@ -109,22 +65,17 @@ const MainContent = () => {
 
   return (
     <main className="flex flex-col items-center gap-12 py-12 w-full">
-      <section className="flex justify-between w-7xl h-[56px]">
-        <SearchInput
-          value={filters?.searchQ}
-          handleSearch={handleSearch}
-          disabled={loading}
-        />
-        <SelectField
-          value={filters?.region}
-          onValueChange={handleRegionSelect}
-          selectItems={filterOptions?.regions || []}
-          loading={filterOptionsLoading}
-          error={filterOptionsError}
-          disabled={loading}
-        />
-      </section>
-      <CountryList countries={countries} loading={loading} error={error} />
+      <FilterBar
+        filters={filters}
+        countriesLoading={countriesLoading}
+        handleSearch={handleSearch}
+        handleRegionSelect={handleRegionSelect}
+      />
+      <CountryList
+        countries={countries}
+        loading={countriesLoading}
+        error={error}
+      />
     </main>
   );
 };
