@@ -146,7 +146,9 @@ const CountryDetails = ({ countryDetails, loading, error }: Props) => {
           <span className="font-semibold text-nowrap">Border Countries: </span>
           <div className="flex gap-5">
             {countryDetails?.borders?.map((border: string) => (
-              <div className="p-1 px-4 border rounded">{border}</div>
+              <div key={border} className="p-1 px-4 border rounded">
+                {border}
+              </div>
             )) ?? 'None'}
           </div>
         </div>
