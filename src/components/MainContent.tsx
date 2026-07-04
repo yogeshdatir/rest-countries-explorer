@@ -25,7 +25,16 @@ const MainContent = () => {
   useEffect(() => {
     const countriesController = new AbortController();
 
-    fetch(`/api/countries?search=${debouncedSearchQ}&region=${region}`, {
+    const baseUrl = '/api/countries';
+
+    const params = {
+      search: debouncedSearchQ,
+      region,
+    };
+
+    const queryString = new URLSearchParams(params);
+
+    fetch(`${baseUrl}?${queryString}`, {
       signal: countriesController.signal,
     })
       .then((res) => {

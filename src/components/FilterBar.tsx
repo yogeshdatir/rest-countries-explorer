@@ -2,6 +2,7 @@ import { useEffect, useState, type ChangeEvent } from 'react';
 import { SearchInput } from './SearchInput';
 import SelectField from './SelectField';
 import type { Filters } from './MainContent';
+import { containerClasses } from '@/App';
 
 interface FilterOptions {
   regions: string[];
@@ -58,7 +59,9 @@ const FilterBar = ({
     };
   }, []);
   return (
-    <section className="flex justify-between w-7xl h-[56px]">
+    <section
+      className={`flex lg:flex-row gap-10 flex-col justify-between h-auto w-full ${containerClasses}`}
+    >
       <SearchInput
         value={filters?.searchQ}
         handleSearch={handleSearch}

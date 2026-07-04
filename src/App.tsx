@@ -1,6 +1,8 @@
 import { Outlet } from 'react-router';
 import TopBar from './components/TopBar';
 
+export const containerClasses = 'max-sm:w-xs sm:w-2xl lg:w-4xl xl:w-7xl';
+
 function App() {
   return (
     <div className="flex flex-col items-center">

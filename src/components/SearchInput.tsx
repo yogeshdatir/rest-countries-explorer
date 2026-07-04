@@ -15,7 +15,7 @@ interface Props {
 
 export function SearchInput({ value, handleSearch, disabled = false }: Props) {
   return (
-    <Field className="w-[480px]">
+    <Field className="w-full lg:w-[480px] h-[56px]">
       <InputGroup className="flex gap-3 px-6 h-full">
         <InputGroupInput
           id="input-group-search"

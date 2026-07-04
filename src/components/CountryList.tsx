@@ -2,6 +2,7 @@ import type { Country } from '@/types/country';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Skeleton } from './ui/skeleton';
 import { Link } from 'react-router';
+import { containerClasses } from '@/App';
 
 type Props = {
   countries: Country[] | null;
@@ -12,7 +13,9 @@ type Props = {
 const CountryList = ({ countries, loading, error }: Props) => {
   if (loading) {
     return (
-      <section className="gap-18 grid grid-cols-4 w-7xl">
+      <section
+        className={`max-sm:gap-10 sm:gap-10 md:gap-13 xl:gap-18 grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${containerClasses}`}
+      >
         {new Array(12).fill(null).map((_, index) => (
           <Skeleton
             key={index}
@@ -32,7 +35,9 @@ const CountryList = ({ countries, loading, error }: Props) => {
   }
 
   return (
-    <section className="gap-18 grid grid-cols-4 w-7xl">
+    <section
+      className={`max-sm:gap-10 sm:gap-5 md:gap-10 xl:gap-18 grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 ${containerClasses} place-items-center`}
+    >
       {countries?.map((country: Country) => {
         return (
           <Link key={country.name} to={`/${country.alpha3Code}`}>

@@ -4,6 +4,7 @@ import type { Country } from '@/types/country';
 import { Button } from './ui/button';
 import { ArrowLeftIcon } from 'lucide-react';
 import CountryDetails from './CountryDetails';
+import { containerClasses } from '@/App';
 
 const CountryDetailsLayout = () => {
   const { alpha3Code = '' } = useParams();
@@ -51,7 +52,9 @@ const CountryDetailsLayout = () => {
   }, [alpha3Code]);
 
   return (
-    <div className={`flex flex-col gap-20 pt-20`}>
+    <div
+      className={`flex flex-col lg:gap-20 gap-11 lg:pt-20 pt-11 pb-10 ${containerClasses}`}
+    >
       <Link to="/">
         <Button variant="outline" className="px-4 max-w-max">
           <ArrowLeftIcon />

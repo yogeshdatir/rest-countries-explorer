@@ -26,13 +26,13 @@ const SelectField = ({
   error,
   disabled = false,
 }: Props) => {
-  if (loading) return <Skeleton className="bg-gray-300 w-[200px] h-full" />;
+  if (loading) return <Skeleton className="bg-gray-300 w-[200px] h-[56px]" />;
 
   if (error) return <div>{error}</div>;
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className="px-6 w-[200px] h-full!">
+      <SelectTrigger className="px-6 w-[200px] h-[56px]!">
         <SelectValue placeholder="Filter by Region" />
       </SelectTrigger>
       <SelectContent position="popper">
