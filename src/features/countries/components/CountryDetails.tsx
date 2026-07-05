@@ -1,6 +1,6 @@
+import { TypographyH1 } from '@/components/common/TypographyH1';
+import { Skeleton } from '@/components/ui/skeleton';
 import type { Country } from '@/types/country';
-import { TypographyH1 } from './TypographyH1';
-import { Skeleton } from './ui/skeleton';
 
 type Props = {
   countryDetails: Country | null;

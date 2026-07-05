@@ -1,8 +1,8 @@
 import type { Country } from '@/types/country';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Skeleton } from './ui/skeleton';
 import { Link } from 'react-router';
-import { containerClasses } from '@/App';
+import { Skeleton } from '@/components/ui/skeleton';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { containerClasses } from '@/components/layout/Layout';
 
 type Props = {
   countries: Country[] | null;

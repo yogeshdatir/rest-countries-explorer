@@ -6,8 +6,8 @@ import {
   SelectSeparator,
   SelectTrigger,
   SelectValue,
-} from './ui/select';
-import { Skeleton } from './ui/skeleton';
+} from '../ui/select';
+import { Skeleton } from '../ui/skeleton';
 
 type Props = {
   value: string | undefined;
@@ -45,7 +45,11 @@ const SelectField = ({
         <SelectGroup>
           {selectItems.map((region: string) => {
             return (
-              <SelectItem key={region} value={region}>
+              <SelectItem
+                key={region}
+                value={region}
+                className="cursor-pointer"
+              >
                 {region}
               </SelectItem>
             );

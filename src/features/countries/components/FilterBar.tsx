@@ -1,8 +1,8 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
-import { SearchInput } from './SearchInput';
-import SelectField from './SelectField';
-import type { Filters } from './MainContent';
-import { containerClasses } from '@/App';
+import { SearchInput } from '@/components/common/SearchInput';
+import SelectField from '@/components/common/SelectField';
+import type { Filters } from '@/pages/CountriesListPage';
+import { containerClasses } from '@/components/layout/Layout';
 
 interface FilterOptions {
   regions: string[];
