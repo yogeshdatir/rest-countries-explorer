@@ -4,6 +4,7 @@ import useFetch from '@/hooks/useFetch';
 import type { Country } from '@/types/country';
 import { useParams } from 'react-router';
 import DetailsRow from './DetailsRow';
+import { useMemo } from 'react';
 
 export type DetailsRowData = {
   label: string;
@@ -44,25 +45,28 @@ const CountryDetails = () => {
     languages,
   } = countryDetails || {};
 
-  const detailsColumn1Data: DetailsRowData[] = [
-    {
-      label: 'Native Name',
-      value: nativeName,
-    },
-    {
-      label: 'Population',
-      value: population,
-    },
-    {
-      label: 'Region',
-      value: region,
-    },
-    {
-      label: 'Sub Region',
-      value: subregion,
-    },
-    { label: 'Capital', value: capital },
-  ];
+  const detailsColumn1Data: DetailsRowData[] = useMemo(
+    () => [
+      {
+        label: 'Native Name',
+        value: nativeName,
+      },
+      {
+        label: 'Population',
+        value: population?.toLocaleString(),
+      },
+      {
+        label: 'Region',
+        value: region,
+      },
+      {
+        label: 'Sub Region',
+        value: subregion,
+      },
+      { label: 'Capital', value: capital },
+    ],
+    [capital, nativeName, population, region, subregion],
+  );
 
   const topLevelDomainString = topLevelDomain?.join(', ');
 
@@ -72,20 +76,23 @@ const CountryDetails = () => {
 
   const langString = languages?.map((language) => language.name).join(', ');
 
-  const detailsColumn2Data: DetailsRowData[] = [
-    {
-      label: 'Top Level Domain',
-      value: topLevelDomainString,
-    },
-    {
-      label: 'Currencies',
-      value: currenciesString,
-    },
-    {
-      label: 'Languages',
-      value: langString,
-    },
-  ];
+  const detailsColumn2Data: DetailsRowData[] = useMemo(
+    () => [
+      {
+        label: 'Top Level Domain',
+        value: topLevelDomainString,
+      },
+      {
+        label: 'Currencies',
+        value: currenciesString,
+      },
+      {
+        label: 'Languages',
+        value: langString,
+      },
+    ],
+    [currenciesString, langString, topLevelDomainString],
+  );
 
   if (error) {
     return <div>{error}</div>;

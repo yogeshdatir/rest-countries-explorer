@@ -2,7 +2,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import type { DetailsRowData } from './CountryDetails';
 
 type Props = DetailsRowData & {
-  loading: boolean;
+  loading?: boolean;
 };
 
 const DetailsRow = ({ label, value, loading }: Props) => {

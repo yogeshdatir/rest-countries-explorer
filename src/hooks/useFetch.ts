@@ -12,7 +12,7 @@ const useFetch = <T>(url: string) => {
       signal: controller.signal,
     })
       .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch countries');
+        if (!res.ok) throw new Error('Failed to fetch data');
         return res.json();
       })
       .then((data) => {
