@@ -14,7 +14,9 @@ const TopBar = () => {
   return (
     <header className="top-0 sticky flex justify-center items-center bg-white dark:bg-card shadow-sm w-full h-[80px]">
       <div className={`flex justify-between ${containerClasses}`}>
-        <TypographyH1>Where in the world?</TypographyH1>
+        <TypographyH1 className="max-md:pt-[3px] max-md:text-xl">
+          Where in the world?
+        </TypographyH1>
         <Button variant="ghost" onClick={handleThemeToggle}>
           <MoonIcon /> Dark Mode
         </Button>

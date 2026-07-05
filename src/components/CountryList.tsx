@@ -41,7 +41,7 @@ const CountryList = ({ countries, loading, error }: Props) => {
       {countries?.map((country: Country) => {
         return (
           <Link key={country.name} to={`/${country.alpha3Code}`}>
-            <Card className="rounded-[5px] w-[264px] h-[336px]">
+            <Card className="hover:shadow-[0_0_20px_5px_rgba(59,130,246,0.7)] rounded-[5px] w-[264px] h-[336px] hover:scale-105 transition duration-200 ease-in-out">
               <img
                 src={country.flags.png}
                 alt="Event cover"
