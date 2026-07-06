@@ -40,7 +40,7 @@ const CountryCard = ({ country }: Props) => {
         </CardHeader>
         <CardContent>
           {countryData.map(({ value, label }) => {
-            return <DetailsRow value={value} label={label} />;
+            return <DetailsRow key={label} value={value} label={label} />;
           })}
         </CardContent>
       </Card>
