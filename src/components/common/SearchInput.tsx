@@ -1,4 +1,4 @@
-import { SearchIcon } from 'lucide-react';
+import { SearchIcon, X } from 'lucide-react';
 
 import { Field } from '@/components/ui/field';
 import {
@@ -6,10 +6,11 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
+import { Button } from '../ui/button';
 
 interface Props {
   value: string | number;
-  handleSearch: React.ChangeEventHandler;
+  handleSearch: (value: string) => void;
   disabled?: boolean;
 }
 
@@ -21,12 +22,24 @@ export function SearchInput({ value, handleSearch, disabled = false }: Props) {
           id="input-group-search"
           placeholder="Search for a country..."
           value={value}
-          onChange={handleSearch}
+          onChange={(e) => handleSearch(e.target.value)}
           disabled={disabled}
         />
         <InputGroupAddon>
           <SearchIcon />
         </InputGroupAddon>
+        {value && (
+          <InputGroupAddon align="inline-end">
+            <Button
+              variant="ghost"
+              size="xs"
+              className="rounded-full w-4 h-4"
+              onClick={() => handleSearch('')}
+            >
+              <X />
+            </Button>
+          </InputGroupAddon>
+        )}
       </InputGroup>
     </Field>
   );

@@ -1,27 +1,27 @@
-import { type ChangeEvent } from 'react';
 import { SearchInput } from '@/components/common/SearchInput';
 import SelectField from '@/components/common/SelectField';
-import type { Filters } from '@/pages/CountriesListPage';
 import { containerClasses } from '@/components/layout/Layout';
 import useFetch from '@/hooks/useFetch';
+import { useSearchParams } from 'react-router';
 
 interface FilterOptions {
   regions: string[];
 }
 
 type Props = {
-  filters: Filters;
+  search: string;
   countriesLoading: boolean;
-  handleSearch: (event: ChangeEvent<HTMLInputElement, Element>) => void;
+  handleSearch: (value: string) => void;
   handleRegionSelect: (value: string) => void;
 };
 
 const FilterBar = ({
-  filters,
+  search,
   countriesLoading,
   handleSearch,
   handleRegionSelect,
 }: Props) => {
+  const [searchParams] = useSearchParams();
   const {
     data: filterOptions,
     loading,
@@ -33,12 +33,12 @@ const FilterBar = ({
       className={`flex lg:flex-row gap-10 flex-col justify-between h-auto w-full ${containerClasses}`}
     >
       <SearchInput
-        value={filters?.searchQ}
+        value={search}
         handleSearch={handleSearch}
         disabled={countriesLoading}
       />
       <SelectField
-        value={filters?.region}
+        value={searchParams.get('region') || ''}
         onValueChange={handleRegionSelect}
         selectItems={filterOptions?.regions || []}
         loading={loading}
