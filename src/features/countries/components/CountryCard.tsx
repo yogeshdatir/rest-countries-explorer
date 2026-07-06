@@ -29,7 +29,7 @@ const CountryCard = ({ country }: Props) => {
 
   return (
     <Link key={name} to={`/${alpha3Code}`}>
-      <Card className="hover:shadow-[0_0_20px_5px_rgba(59,130,246,0.7)] rounded-[5px] w-[264px] h-[336px] hover:scale-105 transition duration-200 ease-in-out">
+      <Card className="hover:shadow-[0_0_20px_5px_rgba(59,130,246,0.7)] rounded-[5px] w-[264px] h-[336px] hover:scale-105 duration-200 ease-in-out transition!">
         <img
           src={flags.png}
           alt={`${name} flag`}
