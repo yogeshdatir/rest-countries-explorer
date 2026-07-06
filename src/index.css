@@ -133,5 +133,8 @@
 }
 
 * {
-  transition: background-color 0.2s ease-out;
+  transition:
+    background-color 0.2s ease-out,
+    box-shadow 0.2s ease-out,
+    scale 0.2s ease-out;
 }
