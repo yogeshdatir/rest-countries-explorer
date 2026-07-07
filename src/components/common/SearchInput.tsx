@@ -24,6 +24,7 @@ export function SearchInput({ value, handleSearch, disabled = false }: Props) {
           value={value}
           onChange={(e) => handleSearch(e.target.value)}
           disabled={disabled}
+          aria-label="Search for a country"
         />
         <InputGroupAddon>
           <SearchIcon />

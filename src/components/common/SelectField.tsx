@@ -32,7 +32,10 @@ const SelectField = ({
 
   return (
     <Select value={value} onValueChange={onValueChange} disabled={disabled}>
-      <SelectTrigger className="px-6 w-[200px] h-[56px]!">
+      <SelectTrigger
+        className="px-6 w-[200px] h-[56px]!"
+        aria-label="Filter By Region"
+      >
         <SelectValue placeholder="Filter by Region" />
       </SelectTrigger>
       <SelectContent position="popper">

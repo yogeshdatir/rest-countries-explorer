@@ -11,8 +11,14 @@ const useFetch = <T>(url: string) => {
     fetch(url, {
       signal: controller.signal,
     })
-      .then((res) => {
-        if (!res.ok) throw new Error('Failed to fetch data');
+      .then(async (res) => {
+        console.log(res);
+        if (!res.ok) {
+          const body = await res.json().catch(() => null);
+          throw new Error(
+            body?.message ?? `Request failed with status ${res.status}`,
+          );
+        }
         return res.json();
       })
       .then((data) => {
