@@ -1,138 +1,114 @@
 import { server } from '@/mocks/node';
 import { http, HttpResponse } from 'msw';
 import { render, screen, waitFor } from '@testing-library/react';
-import CountriesListPage from '../CountriesListPage';
-import { MemoryRouter } from 'react-router';
+import { MemoryRouter, Routes, Route } from 'react-router';
 import userEvent from '@testing-library/user-event';
+import Layout from '@/components/layout/Layout';
+import CountriesListPage from '../CountriesListPage';
+
+function renderListPage(route = '/') {
+  return render(
+    <MemoryRouter initialEntries={[route]}>
+      <Routes>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<CountriesListPage />} />
+        </Route>
+      </Routes>
+    </MemoryRouter>,
+  );
+}
 
 describe('CountriesListPage', () => {
-  it('shows skeleton while loading, then renders country cards', async () => {
-    // Arrange — MSW's default handler serves real mock data
-    const { container } = render(
-      <MemoryRouter>
-        <CountriesListPage />
-      </MemoryRouter>,
-    );
+  describe('data states', () => {
+    it('shows skeleton while loading, then renders country cards', async () => {
+      const { container } = renderListPage();
 
-    // Act — nothing to trigger, fetch happens on mount
+      expect(
+        container.querySelectorAll('[data-slot="skeleton"]').length,
+      ).toBeGreaterThan(0);
 
-    // Assert — loading state first
+      expect(await screen.findByText('Afghanistan')).toBeInTheDocument();
+    });
 
-    expect(
-      // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
-      container.querySelectorAll('[data-slot="skeleton"]').length,
-    ).toBeGreaterThan(0);
+    it('shows error message when API fails', async () => {
+      server.use(
+        http.get('/api/countries', () =>
+          HttpResponse.json({ message: 'Server error' }, { status: 500 }),
+        ),
+      );
 
-    // Assert — data renders after fetch resolves
-    await waitFor(() => {
-      expect(screen.getByText('Afghanistan')).toBeInTheDocument();
+      renderListPage();
+
+      expect(await screen.findByText(/Server error/i)).toBeInTheDocument();
+    });
+
+    it('shows empty state when API returns no countries', async () => {
+      server.use(http.get('/api/countries', () => HttpResponse.json([])));
+
+      renderListPage();
+
+      expect(
+        await screen.findByText('No countries found.'),
+      ).toBeInTheDocument();
     });
   });
 
-  it('shows error message when API fails', async () => {
-    // Arrange — override default handler for this test only
-    server.use(
-      http.get('/api/countries', () => {
-        return HttpResponse.json({ message: 'Server error' }, { status: 500 });
-      }),
-    );
+  describe('URL-driven filters', () => {
+    it('filters countries with search URL query', async () => {
+      renderListPage('/?search=af');
 
-    render(
-      <MemoryRouter>
-        <CountriesListPage />
-      </MemoryRouter>,
-    );
+      await waitFor(() => {
+        expect(screen.getByText('Afghanistan')).toBeInTheDocument();
+        expect(screen.queryByText('Albania')).not.toBeInTheDocument();
+      });
+    });
 
-    await waitFor(() => {
-      expect(screen.getByText(/Server error/i)).toBeInTheDocument();
+    it('filters countries with region URL query', async () => {
+      renderListPage('/?region=asia');
+
+      await waitFor(() => {
+        expect(screen.getByText('Afghanistan')).toBeInTheDocument();
+        expect(screen.queryByText('Albania')).not.toBeInTheDocument();
+      });
     });
   });
 
-  it('shows empty state when no countries match search', async () => {
-    server.use(http.get('/api/countries', () => HttpResponse.json([])));
+  describe('user-driven filters', () => {
+    it('filters countries on user input in search', async () => {
+      const user = userEvent.setup();
+      renderListPage();
 
-    render(
-      <MemoryRouter>
-        <CountriesListPage />
-      </MemoryRouter>,
-    );
+      await screen.findByText('Afghanistan');
 
-    await waitFor(() => {
-      expect(screen.getByText('No countries found.')).toBeInTheDocument();
-    });
-  });
+      await user.type(
+        screen.getByRole('textbox', { name: /search for a country/i }),
+        'india',
+      );
 
-  it('should filter countries with search URL query', async () => {
-    render(
-      <MemoryRouter initialEntries={['/?search=af']}>
-        <CountriesListPage />
-      </MemoryRouter>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Afghanistan')).toBeInTheDocument();
-      expect(screen.queryByText('Albania')).not.toBeInTheDocument();
-    });
-  });
-
-  it('should filter countries with region URL query', async () => {
-    render(
-      <MemoryRouter initialEntries={['/?region=asia']}>
-        <CountriesListPage />
-      </MemoryRouter>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Afghanistan')).toBeInTheDocument();
-      expect(screen.queryByText('Albania')).not.toBeInTheDocument();
-    });
-  });
-
-  it('should filter countries on user input in search', async () => {
-    const user = userEvent.setup();
-
-    render(
-      <MemoryRouter>
-        <CountriesListPage />
-      </MemoryRouter>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Afghanistan')).toBeInTheDocument();
+      await waitFor(
+        () => {
+          expect(screen.getByText('India')).toBeInTheDocument();
+          expect(screen.queryByText('Afghanistan')).not.toBeInTheDocument();
+        },
+        { timeout: 2000 },
+      );
     });
 
-    await user.type(
-      screen.getByRole('textbox', { name: /search for a country/i }),
-      'india',
-    );
+    it('filters countries on region selection', async () => {
+      const user = userEvent.setup();
+      renderListPage();
 
-    await waitFor(() => {
-      expect(screen.getByText('India')).toBeInTheDocument();
-    });
-  });
+      await screen.findByText('Afghanistan');
 
-  it('should filter countries on region selection', async () => {
-    const user = userEvent.setup();
+      await user.click(
+        screen.getByRole('combobox', { name: /filter by region/i }),
+      );
+      await user.click(screen.getByRole('option', { name: /asia/i }));
 
-    render(
-      <MemoryRouter>
-        <CountriesListPage />
-      </MemoryRouter>,
-    );
-
-    await waitFor(() => {
-      expect(screen.getByText('Afghanistan')).toBeInTheDocument();
-    });
-
-    await user.click(
-      screen.getByRole('combobox', { name: /filter by region/i }),
-    );
-
-    await user.click(screen.getByRole('option', { name: /asia/i }));
-
-    await waitFor(() => {
-      expect(screen.getByText('India')).toBeInTheDocument();
-      expect(screen.queryByText('France')).not.toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('India')).toBeInTheDocument();
+        expect(screen.queryByText('France')).not.toBeInTheDocument();
+      });
     });
   });
 });
