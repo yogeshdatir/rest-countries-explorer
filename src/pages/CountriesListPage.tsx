@@ -11,6 +11,7 @@ const CountriesListPage = () => {
     search,
     handleSearch,
     handleRegionSelect,
+    isPending,
   } = useOutletContext<CountriesData>();
 
   return (
@@ -21,7 +22,12 @@ const CountriesListPage = () => {
         handleSearch={handleSearch}
         handleRegionSelect={handleRegionSelect}
       />
-      <CountryList countries={countries} loading={loading} error={error} />
+      <CountryList
+        countries={countries}
+        loading={loading}
+        error={error}
+        isPending={isPending}
+      />
     </div>
   );
 };

@@ -1,8 +1,13 @@
 import { API_ENDPOINTS, getApiUrl } from '@/config/api';
-import useDebounce from '@/hooks/useDebounce';
 import useFetch from '@/hooks/useFetch';
 import type { Country } from '@/types/country';
-import { useMemo, useEffect, useState } from 'react';
+import {
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+  useTransition,
+} from 'react';
 import { useSearchParams } from 'react-router';
 
 export interface CountriesData {
@@ -12,6 +17,7 @@ export interface CountriesData {
   handleSearch: (value: string) => void;
   handleRegionSelect: (value: string) => void;
   search: string;
+  isPending: boolean;
 }
 
 const useCountries = (): CountriesData => {
@@ -19,15 +25,19 @@ const useCountries = (): CountriesData => {
   const [search, setSearch] = useState<string>(
     searchParams.get('search') || '',
   );
-  const debouncedSearchQ = useDebounce(search);
+  const [isPending, startTransition] = useTransition();
 
+  // Input stays instantly responsive; only the derived filtered list lags
+  const deferredSearch = useDeferredValue(search);
+
+  // Sync search to URL (kept separate from filtering itself)
   useEffect(() => {
     setSearchParams(
       (prev) => {
         const newParams = new URLSearchParams(prev);
 
-        if (debouncedSearchQ.trim() === '') newParams.delete('search');
-        else newParams.set('search', debouncedSearchQ);
+        if (deferredSearch.trim() === '') newParams.delete('search');
+        else newParams.set('search', deferredSearch);
 
         return newParams;
       },
@@ -35,38 +45,42 @@ const useCountries = (): CountriesData => {
         replace: true,
       },
     );
-  }, [debouncedSearchQ, setSearchParams]);
+  }, [deferredSearch, setSearchParams]);
 
+  // Fetch once — full dataset, no query params
   const apiUrl = getApiUrl(API_ENDPOINTS.COUNTRIES);
   const { data: allCountries, loading, error } = useFetch<Country[]>(apiUrl);
 
   const region = searchParams.get('region') || '';
 
+  // Client-side filtering — synchronous, no flash, survives navigation
   const countries = useMemo(() => {
     if (!allCountries) return null;
 
     return allCountries.filter((country) => {
       const matchesSearch = country.name
         .toLowerCase()
-        .includes(debouncedSearchQ.toLowerCase());
+        .includes(deferredSearch.toLowerCase());
       const matchesRegion =
         region === '' || country.region.toLowerCase() === region.toLowerCase();
       return matchesSearch && matchesRegion;
     });
-  }, [allCountries, debouncedSearchQ, region]);
+  }, [allCountries, deferredSearch, region]);
 
   const handleSearch = (value: string) => {
-    setSearch(value);
+    setSearch(value); // urgent update — input stays responsive
   };
 
   const handleRegionSelect = (value: string) => {
-    setSearchParams((prev) => {
-      const newParams = new URLSearchParams(prev);
+    startTransition(() => {
+      setSearchParams((prev) => {
+        const newParams = new URLSearchParams(prev);
 
-      if (value.trim() === '') newParams.delete('region');
-      else newParams.set('region', value);
+        if (value.trim() === '') newParams.delete('region');
+        else newParams.set('region', value);
 
-      return newParams;
+        return newParams;
+      });
     });
   };
 
@@ -77,6 +91,7 @@ const useCountries = (): CountriesData => {
     handleSearch,
     handleRegionSelect,
     search,
+    isPending,
   };
 };
 
