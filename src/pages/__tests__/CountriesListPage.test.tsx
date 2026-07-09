@@ -6,6 +6,8 @@ import userEvent from '@testing-library/user-event';
 import Layout from '@/components/layout/Layout';
 import CountriesListPage from '../CountriesListPage';
 
+import { getApiUrl, API_ENDPOINTS } from '@/config/api';
+
 function renderListPage(route = '/') {
   return render(
     <MemoryRouter initialEntries={[route]}>
@@ -24,6 +26,7 @@ describe('CountriesListPage', () => {
       const { container } = renderListPage();
 
       expect(
+        // eslint-disable-next-line testing-library/no-container, testing-library/no-node-access
         container.querySelectorAll('[data-slot="skeleton"]').length,
       ).toBeGreaterThan(0);
 
@@ -32,7 +35,7 @@ describe('CountriesListPage', () => {
 
     it('shows error message when API fails', async () => {
       server.use(
-        http.get('/api/countries', () =>
+        http.get(getApiUrl(API_ENDPOINTS.COUNTRIES), () =>
           HttpResponse.json({ message: 'Server error' }, { status: 500 }),
         ),
       );
@@ -43,7 +46,11 @@ describe('CountriesListPage', () => {
     });
 
     it('shows empty state when API returns no countries', async () => {
-      server.use(http.get('/api/countries', () => HttpResponse.json([])));
+      server.use(
+        http.get(getApiUrl(API_ENDPOINTS.COUNTRIES), () =>
+          HttpResponse.json([]),
+        ),
+      );
 
       renderListPage();
 

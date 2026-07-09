@@ -4,6 +4,8 @@ import { render, screen, waitFor } from '@testing-library/react';
 import { server } from '@/mocks/node';
 import { http, HttpResponse } from 'msw';
 
+import { getApiUrl, API_ENDPOINTS } from '@/config/api';
+
 describe('CountryDetailsPage', () => {
   it('should render loading state', async () => {
     const { container } = render(
@@ -26,7 +28,7 @@ describe('CountryDetailsPage', () => {
 
   it('shows error if API fails', async () => {
     server.use(
-      http.get('/api/country', () => {
+      http.get(getApiUrl(API_ENDPOINTS.COUNTRY_DETAILS), () => {
         return HttpResponse.json({ message: 'Server error' }, { status: 500 });
       }),
     );
@@ -45,7 +47,11 @@ describe('CountryDetailsPage', () => {
   });
 
   it('shows empty states when there is no data matching the alpha3Code', async () => {
-    server.use(http.get('/api/country', () => HttpResponse.json(null)));
+    server.use(
+      http.get(getApiUrl(API_ENDPOINTS.COUNTRY_DETAILS), () =>
+        HttpResponse.json(null),
+      ),
+    );
 
     render(
       <MemoryRouter initialEntries={['/AFG']}>

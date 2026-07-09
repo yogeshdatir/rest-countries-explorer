@@ -5,6 +5,7 @@ import type { Country } from '@/types/country';
 import { useParams } from 'react-router';
 import DetailsRow from './DetailsRow';
 import { useMemo } from 'react';
+import { API_ENDPOINTS, getApiUrl } from '@/config/api';
 
 export type DetailsRowData = {
   label: string;
@@ -14,22 +15,17 @@ export type DetailsRowData = {
 const CountryDetails = () => {
   const { alpha3Code = '' } = useParams();
 
-  // 1. Define your base endpoint and parameters
-  const baseUrl = '/api/country';
-  const params = {
+  const countryDetailsBaseUrl = getApiUrl(API_ENDPOINTS.COUNTRY_DETAILS);
+
+  const routeParams = {
     alpha3Code,
   };
 
-  // 2. Convert the parameters object into a query string
-  const queryString = new URLSearchParams(params).toString();
+  const filterParams = new URLSearchParams(routeParams).toString();
 
-  const countryDetailsURL = `${baseUrl}?${queryString}`;
+  const apiUrl = `${countryDetailsBaseUrl}?${filterParams}`;
 
-  const {
-    data: countryDetails,
-    loading,
-    error,
-  } = useFetch<Country>(countryDetailsURL);
+  const { data: countryDetails, loading, error } = useFetch<Country>(apiUrl);
 
   const {
     flags,

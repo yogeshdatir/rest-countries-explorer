@@ -1,6 +1,7 @@
 import { SearchInput } from '@/components/common/SearchInput';
 import SelectField from '@/components/common/SelectField';
 import { containerClasses } from '@/components/layout/Layout';
+import { API_ENDPOINTS, getApiUrl } from '@/config/api';
 import useFetch from '@/hooks/useFetch';
 import { useSearchParams } from 'react-router';
 
@@ -26,7 +27,7 @@ const FilterBar = ({
     data: filterOptions,
     loading,
     error,
-  } = useFetch<FilterOptions>('/api/filterOptions');
+  } = useFetch<FilterOptions>(getApiUrl(API_ENDPOINTS.FILTER_OPTIONS));
 
   return (
     <section

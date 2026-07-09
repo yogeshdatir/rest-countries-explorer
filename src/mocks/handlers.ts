@@ -1,12 +1,13 @@
 import { http, HttpResponse, delay } from 'msw';
+import { API_BASE_URL, API_ENDPOINTS } from '../config/api.js';
 import countriesData from './data/countries.json';
 import type { Country } from '@/types/country';
 
 const countries = countriesData as Country[];
 
 export const handlers = [
-  http.get('/api/countries', async ({ request }) => {
-    await delay(400);
+  http.get(`${API_BASE_URL}${API_ENDPOINTS.COUNTRIES}`, async ({ request }) => {
+    await delay(100);
 
     const url = new URL(request.url);
     const search = url.searchParams.get('search')?.toLowerCase() ?? '';
@@ -32,32 +33,31 @@ export const handlers = [
     return HttpResponse.json(result);
   }),
 
-  http.get('/api/filterOptions', async () => {
-    await delay(300);
+  http.get(`${API_BASE_URL}${API_ENDPOINTS.FILTER_OPTIONS}`, async () => {
     const regionsSet = new Set<string>();
     countries?.forEach((country: Country) => {
-      regionsSet.add(country.region);
+      if (country.region) {
+        regionsSet.add(country.region);
+      }
     });
 
     return HttpResponse.json({ regions: Array.from(regionsSet) });
   }),
 
-  http.get('/api/country', async ({ request }) => {
-    await delay(300);
-    const url = new URL(request.url);
+  http.get(
+    `${API_BASE_URL}${API_ENDPOINTS.COUNTRY_DETAILS}`,
+    async ({ request }) => {
+      const url = new URL(request.url);
+      const alpha3Code = url.searchParams.get('alpha3Code');
 
-    // Given a request url of "/?alpha3Code=1",
-    // the `alpha3Code` will be a "1" string.
-    const alpha3Code = url.searchParams.get('alpha3Code');
+      if (!alpha3Code) {
+        return new HttpResponse(null, { status: 404 });
+      }
 
-    if (!alpha3Code) {
-      return new HttpResponse(null, { status: 404 });
-    }
-
-    const country = countries.find((country: Country) => {
-      return country.alpha3Code === alpha3Code;
-    });
-
-    return HttpResponse.json(country);
-  }),
+      const country = countries.find(
+        (c: Country) => c.alpha3Code === alpha3Code,
+      );
+      return HttpResponse.json(country);
+    },
+  ),
 ];

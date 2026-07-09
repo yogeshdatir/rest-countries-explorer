@@ -1,3 +1,4 @@
+import { API_ENDPOINTS, getApiUrl } from '@/config/api';
 import useDebounce from '@/hooks/useDebounce';
 import useFetch from '@/hooks/useFetch';
 import type { Country } from '@/types/country';
@@ -36,17 +37,15 @@ const useCountries = (): CountriesData => {
     );
   }, [debouncedSearchQ, setSearchParams]);
 
-  const baseUrl = '/api/countries';
-
-  const params = {
+  const queryFilters = {
     search: debouncedSearchQ,
     region: searchParams.get('region') || '',
   };
 
-  const queryString = new URLSearchParams(params);
+  const filterParams = new URLSearchParams(queryFilters);
 
-  const countriesURL = `${baseUrl}?${queryString}`;
-  const { data: countries, loading, error } = useFetch<Country[]>(countriesURL);
+  const apiUrl = getApiUrl(`${API_ENDPOINTS.COUNTRIES}?${filterParams}`);
+  const { data: countries, loading, error } = useFetch<Country[]>(apiUrl);
 
   const handleSearch = (value: string) => {
     setSearch(value);
