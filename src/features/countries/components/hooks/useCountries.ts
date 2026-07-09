@@ -2,7 +2,7 @@ import { API_ENDPOINTS, getApiUrl } from '@/config/api';
 import useDebounce from '@/hooks/useDebounce';
 import useFetch from '@/hooks/useFetch';
 import type { Country } from '@/types/country';
-import { useEffect, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router';
 
 export interface CountriesData {
@@ -37,15 +37,23 @@ const useCountries = (): CountriesData => {
     );
   }, [debouncedSearchQ, setSearchParams]);
 
-  const queryFilters = {
-    search: debouncedSearchQ,
-    region: searchParams.get('region') || '',
-  };
+  const apiUrl = getApiUrl(API_ENDPOINTS.COUNTRIES);
+  const { data: allCountries, loading, error } = useFetch<Country[]>(apiUrl);
 
-  const filterParams = new URLSearchParams(queryFilters);
+  const region = searchParams.get('region') || '';
 
-  const apiUrl = getApiUrl(`${API_ENDPOINTS.COUNTRIES}?${filterParams}`);
-  const { data: countries, loading, error } = useFetch<Country[]>(apiUrl);
+  const countries = useMemo(() => {
+    if (!allCountries) return null;
+
+    return allCountries.filter((country) => {
+      const matchesSearch = country.name
+        .toLowerCase()
+        .includes(debouncedSearchQ.toLowerCase());
+      const matchesRegion =
+        region === '' || country.region.toLowerCase() === region.toLowerCase();
+      return matchesSearch && matchesRegion;
+    });
+  }, [allCountries, debouncedSearchQ, region]);
 
   const handleSearch = (value: string) => {
     setSearch(value);
@@ -61,6 +69,7 @@ const useCountries = (): CountriesData => {
       return newParams;
     });
   };
+
   return {
     countries,
     loading,
