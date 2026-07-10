@@ -3,6 +3,7 @@
 Search and explore countries by name and region, with URL-shareable filters and a detailed country view.
 
 🔗 **Live demo:** https://dzh35rg22h5dq.cloudfront.net/
+
 📦 **Repo:** this repo
 
 ![screenshot](./docs/rest-countries-explorer.png)
@@ -19,7 +20,7 @@ Backend: Node/Express, deployed on Render.
 - **Hosting:** AWS S3 (private, OAC-secured) behind CloudFront for HTTPS + CDN
 - **Routing fix:** CloudFront custom error responses (403/404 → `index.html`) support client-side routing on refresh/deep-link
 - **Cache invalidation:** CloudFront cache invalidated automatically on each deploy
-- **Backend:** Node/Express API deployed on Render
+- **Backend:** Node/Express API deployed on Render, with CORS restricted to the CloudFront origin via an allowlist
 
 ## Concepts & Patterns Used
 
@@ -42,11 +43,16 @@ Backend: Node/Express, deployed on Render.
 - Filters persist across navigation and are shareable via URL
 - Country detail page with lazy-loaded route
 - Responsive layout, sticky header
+- Full CI/CD pipeline: push to `main` → auto build, deploy to S3, CloudFront cache invalidation
 
 ## Tradeoffs
 
 - **Frontend-only filtering, not API-triggered:** the full dataset is small enough to fetch once; this avoids a network round-trip per keystroke and eliminates a UI flash that occurred when filtering was API-driven (see commit history). A separate branch (`feature/api-filter`) explores the API-triggered approach instead, for comparison.
 - **`useDeferredValue` for search vs. `useTransition` for region select:** chosen deliberately to demonstrate both patterns — search needs instant input feedback (deferred read), while region selection has no typing urgency (deferred write via transition).
+
+## Known Limitations
+
+- **Backend cold start:** the API is hosted on Render's free tier, which spins down after ~15 minutes of inactivity. The first request after idle can take 20–30+ seconds while the server wakes up — the app shows a "waking up the server" message during this delay rather than a generic/stuck-looking spinner.
 
 ## Running Locally
 
